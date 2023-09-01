@@ -29,6 +29,54 @@ class Tareas {
       this._listado[tarea.id] = tarea;
     });
   }
+
+  listadoCompleto() {
+    this._listadoArray.forEach((tarea, i) => {
+      const idx = `${i + 1}.`.green;
+      const { desc, completadoEn } = tarea;
+      const estado = completadoEn ? 'Completado'.green : 'Pendiente'.red;
+
+      console.log(`${idx} ${desc} :: ${estado}`);
+    });
+  }
+
+  borrarTarea(id = '') {
+    if (this._listado[id]) delete this._listado[id];
+  }
+
+  toggleCompletas(ids = []) {
+    ids.forEach((id) => {
+      const tarea = this._listado[id];
+      if (!tarea.completadoEn) {
+        tarea.completadoEn = new Date().toISOString();
+      }
+    });
+
+    this._listadoArray.forEach((tarea) => {
+      if (!ids.includes(tarea.id)) {
+        this._listado[tarea.id].completadoEn = null;
+      }
+    });
+  }
+
+  listarPendientesCompletadas(completadas = true) {
+    let contador = 0;
+    this._listadoArray.forEach((tarea) => {
+      const { desc, completadoEn } = tarea;
+      const estado = completadoEn ? 'Compleado'.green : 'Pendiente'.red;
+      if (completadas && completadoEn) {
+        contador++;
+        console.log(
+          `${(contador + '.').green} ${desc} :: ${completadoEn.green}`
+        );
+      }
+
+      if (!completadas && !completadoEn) {
+        contador++;
+        console.log(`${(contador + '.').green} ${desc} :: ${estado}`);
+      }
+    });
+  }
 }
 
 module.exports = Tareas;
